@@ -38,7 +38,11 @@ impl SuccessRateCalculator {
 
     fn new_game_show() -> GameShow {
         GameShow::new(
-            [Door::new(Some(())), Door::new(None), Door::new(None)],
+            [
+                Door::with_prize(),
+                Door::without_prize(),
+                Door::without_prize(),
+            ],
             Contestant::new(),
         )
     }

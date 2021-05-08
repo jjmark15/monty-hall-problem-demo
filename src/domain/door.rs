@@ -4,11 +4,19 @@ pub(crate) struct Door {
 }
 
 impl Door {
-    pub(crate) fn new(prize: Option<()>) -> Self {
+    fn new(prize: Option<()>) -> Self {
         Door {
             position: DoorPosition::Closed,
             prize,
         }
+    }
+
+    pub(crate) fn with_prize() -> Self {
+        Self::new(Some(()))
+    }
+
+    pub(crate) fn without_prize() -> Self {
+        Self::new(None)
     }
 
     pub(crate) fn open(&mut self) -> Result<(), OpenDoorError> {
