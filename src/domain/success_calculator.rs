@@ -1,3 +1,5 @@
+use rayon::prelude::*;
+
 use crate::domain::contestant::Contestant;
 use crate::domain::door::Door;
 use crate::domain::game_show::GameShow;
@@ -11,7 +13,7 @@ impl SuccessRateCalculator {
 
     pub(crate) fn calculate_switching_success_rate_for_iterations(&self, iterations: u64) -> f64 {
         let success_count = (0..iterations)
-            .into_iter()
+            .into_par_iter()
             .map(|_| self.demo_game_show_with_switching_method())
             .filter(|result| matches!(result, SwitchingDemoResult::Success))
             .count() as f64;
