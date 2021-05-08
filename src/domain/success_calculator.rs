@@ -11,13 +11,16 @@ impl SuccessRateCalculator {
         SuccessRateCalculator {}
     }
 
-    pub(crate) fn calculate_switching_success_rate_for_iterations(&self, iterations: u64) -> f64 {
-        let success_count = (0..iterations)
+    pub(crate) fn calculate_switching_success_rate_for_iterations(
+        &self,
+        iteration_count: u64,
+    ) -> f64 {
+        let switching_success_count = (0..iteration_count)
             .into_par_iter()
             .map(|_| self.demo_game_show_with_switching_method())
-            .filter(|result| matches!(result, SwitchingDemoResult::Success))
+            .filter(SwitchingDemoResult::is_success)
             .count() as f64;
-        success_count / iterations as f64
+        switching_success_count / iteration_count as f64
     }
 
     fn demo_game_show_with_switching_method(&self) -> SwitchingDemoResult {
@@ -34,13 +37,20 @@ impl SuccessRateCalculator {
     }
 
     fn new_game_show() -> GameShow {
-        let doors = [Door::new(Some(())), Door::new(None), Door::new(None)];
-        let contestant = Contestant::new();
-        GameShow::new(doors, contestant)
+        GameShow::new(
+            [Door::new(Some(())), Door::new(None), Door::new(None)],
+            Contestant::new(),
+        )
     }
 }
 
 enum SwitchingDemoResult {
     Success,
     Failure,
+}
+
+impl SwitchingDemoResult {
+    fn is_success(&self) -> bool {
+        matches!(self, SwitchingDemoResult::Success)
+    }
 }
