@@ -20,10 +20,10 @@ impl SuccessRateCalculator {
 
     fn demo_game_show_with_switching_method(&self) -> SwitchingDemoResult {
         let mut game_show = Self::new_game_show();
-        game_show.allow_contestant_to_pick_door();
+        game_show.allow_contestant_to_choose_door();
         game_show.open_a_door_without_prize();
         game_show.allow_contestant_to_switch_doors();
-        game_show.open_picked_door();
+        game_show.open_chosen_door();
         if game_show.contestant_has_won() {
             SwitchingDemoResult::Success
         } else {

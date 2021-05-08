@@ -7,6 +7,7 @@ use crate::domain::door::Door;
 pub(crate) struct GameShow {
     doors: [Door; 3],
     contestant: Contestant,
+    chosen_door_index: Option<usize>,
 }
 
 impl GameShow {
@@ -14,19 +15,17 @@ impl GameShow {
         GameShow {
             doors: Self::shuffled_doors(doors),
             contestant,
+            chosen_door_index: None,
         }
     }
 
-    pub(crate) fn allow_contestant_to_pick_door(&mut self) {
-        self.contestant.pick_a_door_by_index(&self.doors);
+    pub(crate) fn allow_contestant_to_choose_door(&mut self) {
+        self.chosen_door_index = Some(self.contestant.choose_a_door_by_index(&self.doors));
     }
 
     pub(crate) fn open_a_door_without_prize(&mut self) {
         for (i, door) in self.doors.iter_mut().enumerate() {
-            if door.is_open()
-                || i == self.contestant.chosen_door_index().unwrap()
-                || door.contains_prize()
-            {
+            if door.is_open() || i == self.chosen_door_index.unwrap() || door.contains_prize() {
                 continue;
             }
 
@@ -37,18 +36,18 @@ impl GameShow {
 
     pub(crate) fn allow_contestant_to_switch_doors(&mut self) {
         for (i, door) in self.doors.iter().enumerate() {
-            if door.is_open() || i == self.contestant.chosen_door_index().unwrap() {
+            if door.is_open() || i == self.chosen_door_index.unwrap() {
                 continue;
             }
 
-            self.contestant.set_chosen_door_index(i);
+            self.chosen_door_index = Some(i);
             break;
         }
     }
 
-    pub(crate) fn open_picked_door(&mut self) {
+    pub(crate) fn open_chosen_door(&mut self) {
         self.doors
-            .get_mut(self.contestant.chosen_door_index().unwrap())
+            .get_mut(self.chosen_door_index.unwrap())
             .unwrap()
             .open()
             .unwrap();

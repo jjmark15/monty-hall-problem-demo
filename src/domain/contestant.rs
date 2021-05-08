@@ -3,33 +3,20 @@ use rand::thread_rng;
 
 use crate::domain::door::Door;
 
-pub(crate) struct Contestant {
-    chosen_door_index: Option<usize>,
-}
+pub(crate) struct Contestant {}
 
 impl Contestant {
     pub(crate) fn new() -> Self {
-        Contestant {
-            chosen_door_index: None,
-        }
+        Contestant {}
     }
 
-    pub(crate) fn chosen_door_index(&self) -> Option<usize> {
-        self.chosen_door_index
-    }
-
-    pub(crate) fn set_chosen_door_index(&mut self, index: usize) {
-        self.chosen_door_index = Some(index);
-    }
-
-    pub(crate) fn pick_a_door_by_index(&mut self, doors: &[Door; 3]) {
+    pub(crate) fn choose_a_door_by_index(&self, doors: &[Door; 3]) -> usize {
         let mut rng = thread_rng();
-        let choice = doors
+        doors
             .iter()
             .enumerate()
             .map(|(index, _)| index)
             .choose(&mut rng)
-            .unwrap();
-        self.chosen_door_index = Some(choice);
+            .unwrap()
     }
 }
