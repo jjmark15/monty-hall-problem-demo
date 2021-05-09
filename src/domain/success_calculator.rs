@@ -3,7 +3,6 @@ use rayon::prelude::*;
 use crate::domain::contestant::Contestant;
 use crate::domain::door::Door;
 use crate::domain::game_show::GameShow;
-use crate::domain::solution_method::SolutionMethod;
 
 pub(crate) struct SuccessRateCalculator {}
 
@@ -16,32 +15,40 @@ impl SuccessRateCalculator {
         &self,
         iteration_count: u64,
     ) -> f64 {
-        self.calculate_method_success_rate_for_iterations(SolutionMethod::Switch, iteration_count)
+        self.calculate_method_success_rate_for_iterations(
+            iteration_count,
+            Self::demo_game_show_with_switching_method,
+        )
     }
 
     pub(crate) fn calculate_sticking_success_rate_for_iterations(
         &self,
         iteration_count: u64,
     ) -> f64 {
-        self.calculate_method_success_rate_for_iterations(SolutionMethod::Stick, iteration_count)
+        self.calculate_method_success_rate_for_iterations(
+            iteration_count,
+            Self::demo_game_show_with_sticking_method,
+        )
     }
 
     pub(crate) fn calculate_random_success_rate_for_iterations(&self, iteration_count: u64) -> f64 {
-        self.calculate_method_success_rate_for_iterations(SolutionMethod::Random, iteration_count)
+        self.calculate_method_success_rate_for_iterations(
+            iteration_count,
+            Self::demo_game_show_with_random_method,
+        )
     }
 
-    fn calculate_method_success_rate_for_iterations(
+    fn calculate_method_success_rate_for_iterations<F>(
         &self,
-        solution_method: SolutionMethod,
         iteration_count: u64,
-    ) -> f64 {
+        solution_function: F,
+    ) -> f64
+    where
+        F: Fn() -> DemoResult + Sync + Send,
+    {
         let success_count = (0..iteration_count)
             .into_par_iter()
-            .map(|_| match solution_method {
-                SolutionMethod::Switch => Self::demo_game_show_with_switching_method(),
-                SolutionMethod::Stick => Self::demo_game_show_with_sticking_method(),
-                SolutionMethod::Random => Self::demo_game_show_with_random_method(),
-            })
+            .map(|_| solution_function())
             .filter(DemoResult::is_success)
             .count() as f64;
         success_count / iteration_count as f64
