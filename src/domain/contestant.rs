@@ -10,11 +10,12 @@ impl Contestant {
         Contestant {}
     }
 
-    pub(crate) fn choose_a_door_by_index(&self, doors: &[Door; 3]) -> usize {
+    pub(crate) fn choose_a_closed_door_by_index(&self, doors: &[Door; 3]) -> usize {
         let mut rng = thread_rng();
         doors
             .iter()
             .enumerate()
+            .filter(|(_i, door)| !door.is_open())
             .map(|(index, _)| index)
             .choose(&mut rng)
             .unwrap()

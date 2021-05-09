@@ -20,7 +20,7 @@ impl GameShow {
     }
 
     pub(crate) fn allow_contestant_to_choose_door(&mut self) {
-        self.chosen_door_index = Some(self.contestant.choose_a_door_by_index(&self.doors));
+        self.chosen_door_index = Some(self.contestant.choose_a_closed_door_by_index(&self.doors));
     }
 
     pub(crate) fn open_a_door_without_prize(&mut self) {

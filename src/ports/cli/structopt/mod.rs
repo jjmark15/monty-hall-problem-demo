@@ -25,6 +25,9 @@ fn calculate_success_rate_for_method_and_iterations(
         SolutionMethod::Switch => {
             application_service.calculate_switching_success_rate_for_iterations(iteration_count)
         }
+        SolutionMethod::Random => {
+            application_service.calculate_random_success_rate_for_iterations(iteration_count)
+        }
     }
 }
 

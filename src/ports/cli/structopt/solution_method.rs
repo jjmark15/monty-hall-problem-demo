@@ -3,6 +3,7 @@ use std::str::FromStr;
 #[derive(Debug)]
 pub(crate) enum SolutionMethod {
     Switch,
+    Random,
 }
 
 impl FromStr for SolutionMethod {
@@ -11,6 +12,7 @@ impl FromStr for SolutionMethod {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let method = match s.to_lowercase().as_str() {
             "switch" => SolutionMethod::Switch,
+            "random" => SolutionMethod::Random,
             _ => return Err(SolutionMethodParseError(s.to_string())),
         };
         Ok(method)
