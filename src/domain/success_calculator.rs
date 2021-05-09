@@ -19,6 +19,13 @@ impl SuccessRateCalculator {
         self.calculate_method_success_rate_for_iterations(SolutionMethod::Switch, iteration_count)
     }
 
+    pub(crate) fn calculate_sticking_success_rate_for_iterations(
+        &self,
+        iteration_count: u64,
+    ) -> f64 {
+        self.calculate_method_success_rate_for_iterations(SolutionMethod::Stick, iteration_count)
+    }
+
     pub(crate) fn calculate_random_success_rate_for_iterations(&self, iteration_count: u64) -> f64 {
         self.calculate_method_success_rate_for_iterations(SolutionMethod::Random, iteration_count)
     }
@@ -32,6 +39,7 @@ impl SuccessRateCalculator {
             .into_par_iter()
             .map(|_| match solution_method {
                 SolutionMethod::Switch => Self::demo_game_show_with_switching_method(),
+                SolutionMethod::Stick => Self::demo_game_show_with_sticking_method(),
                 SolutionMethod::Random => Self::demo_game_show_with_random_method(),
             })
             .filter(DemoResult::is_success)
@@ -49,6 +57,13 @@ impl SuccessRateCalculator {
             DemoResult::Success
         } else {
             DemoResult::Failure
+        }
+    }
+
+    fn demo_game_show_with_sticking_method() -> DemoResult {
+        match Self::demo_game_show_with_switching_method() {
+            DemoResult::Success => DemoResult::Failure,
+            DemoResult::Failure => DemoResult::Success,
         }
     }
 
