@@ -1,26 +1,10 @@
-use std::str::FromStr;
+use structopt::clap::arg_enum;
 
-#[derive(Debug)]
-pub(crate) enum SolutionMethod {
-    Switch,
-    Stick,
-    Random,
-}
-
-impl FromStr for SolutionMethod {
-    type Err = SolutionMethodParseError;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let method = match s.to_lowercase().as_str() {
-            "switch" => SolutionMethod::Switch,
-            "random" => SolutionMethod::Random,
-            "stick" => SolutionMethod::Stick,
-            _ => return Err(SolutionMethodParseError(s.to_string())),
-        };
-        Ok(method)
+arg_enum! {
+    #[derive(Debug)]
+    pub enum SolutionMethod {
+        Switch,
+        Stick,
+        Random,
     }
 }
-
-#[derive(Debug, thiserror::Error)]
-#[error("Could not parse solution method from '{0}'")]
-pub(crate) struct SolutionMethodParseError(String);

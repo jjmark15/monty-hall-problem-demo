@@ -43,6 +43,6 @@ struct CliOptions {
     iterations: u64,
 
     /// Method for contestant to follow
-    #[structopt(short, long, default_value = "switch")]
+    #[structopt(short, long, default_value = "Switch", possible_values = &SolutionMethod::variants(), case_insensitive = true)]
     method: SolutionMethod,
 }
