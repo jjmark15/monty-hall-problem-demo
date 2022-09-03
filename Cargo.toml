@@ -2,7 +2,7 @@
 name = "monty-hall-problem-demo"
 version = "0.3.0"
 authors = ["Josh Jones <ohblonddev@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

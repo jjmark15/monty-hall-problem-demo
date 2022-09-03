@@ -18,7 +18,7 @@ pub(crate) fn run_cli(application_service: &ApplicationService) {
 
 fn calculate_success_rate_for_method_and_iterations(
     solution_method: SolutionMethod,
-    iteration_count: u64,
+    iteration_count: usize,
     application_service: &ApplicationService,
 ) -> f64 {
     match solution_method {
@@ -40,7 +40,7 @@ fn calculate_success_rate_for_method_and_iterations(
 struct CliOptions {
     /// Number of iterations to run
     #[structopt(short, long, default_value = "1")]
-    iterations: u64,
+    iterations: usize,
 
     /// Method for contestant to follow
     #[structopt(short, long, default_value = "Switch", possible_values = &SolutionMethod::variants(), case_insensitive = true)]

@@ -1,3 +1,4 @@
+use rayon::iter::repeatn;
 use rayon::prelude::*;
 
 use crate::domain::contestant::Contestant;
@@ -13,7 +14,7 @@ impl SuccessRateCalculator {
 
     pub(crate) fn calculate_switching_success_rate_for_iterations(
         &self,
-        iteration_count: u64,
+        iteration_count: usize,
     ) -> f64 {
         self.calculate_method_success_rate_for_iterations(
             iteration_count,
@@ -23,7 +24,7 @@ impl SuccessRateCalculator {
 
     pub(crate) fn calculate_sticking_success_rate_for_iterations(
         &self,
-        iteration_count: u64,
+        iteration_count: usize,
     ) -> f64 {
         self.calculate_method_success_rate_for_iterations(
             iteration_count,
@@ -31,7 +32,10 @@ impl SuccessRateCalculator {
         )
     }
 
-    pub(crate) fn calculate_random_success_rate_for_iterations(&self, iteration_count: u64) -> f64 {
+    pub(crate) fn calculate_random_success_rate_for_iterations(
+        &self,
+        iteration_count: usize,
+    ) -> f64 {
         self.calculate_method_success_rate_for_iterations(
             iteration_count,
             Self::demo_game_show_with_random_method,
@@ -40,14 +44,13 @@ impl SuccessRateCalculator {
 
     fn calculate_method_success_rate_for_iterations<F>(
         &self,
-        iteration_count: u64,
+        iteration_count: usize,
         solution_function: F,
     ) -> f64
     where
         F: Fn() -> DemoResult + Sync + Send,
     {
-        let success_count = (0..iteration_count)
-            .into_par_iter()
+        let success_count = repeatn((), iteration_count)
             .map(|_| solution_function())
             .filter(DemoResult::is_success)
             .count() as f64;
