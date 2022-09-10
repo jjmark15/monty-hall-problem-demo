@@ -1,37 +1,22 @@
 use structopt::StructOpt;
 
-use crate::application::ApplicationService;
-use crate::ports::cli::structopt::solution_method::SolutionMethod;
+use crate::domain::SuccessRateCalculator;
 
 mod solution_method;
 
-pub(crate) fn run_cli(application_service: &ApplicationService) {
+pub(crate) fn run_cli() {
     let opts = CliOptions::from_args();
-    let rate = calculate_success_rate_for_method_and_iterations(
-        opts.method,
-        opts.iterations,
-        application_service,
-    );
 
-    println!("success rate: {}", rate);
-}
+    let calculator = SuccessRateCalculator::new();
+    let success_counts = calculator.calculate_success_rates(opts.iterations);
 
-fn calculate_success_rate_for_method_and_iterations(
-    solution_method: SolutionMethod,
-    iteration_count: usize,
-    application_service: &ApplicationService,
-) -> f64 {
-    match solution_method {
-        SolutionMethod::Switch => {
-            application_service.calculate_switching_success_rate_for_iterations(iteration_count)
-        }
-        SolutionMethod::Stick => {
-            application_service.calculate_sticking_success_rate_for_iterations(iteration_count)
-        }
-        SolutionMethod::Random => {
-            application_service.calculate_random_success_rate_for_iterations(iteration_count)
-        }
-    }
+    let mut output_strings = success_counts
+        .into_iter()
+        .map(|(method_name, count)| format!("{}: {}", method_name, count))
+        .collect::<Vec<String>>();
+    output_strings.sort();
+
+    println!("{}", output_strings.join("\n"));
 }
 
 /// Demo of the switching solution to the Monty Hall problem
@@ -41,8 +26,4 @@ struct CliOptions {
     /// Number of iterations to run
     #[structopt(short, long, default_value = "1")]
     iterations: usize,
-
-    /// Method for contestant to follow
-    #[structopt(short, long, default_value = "Switch", possible_values = &SolutionMethod::variants(), case_insensitive = true)]
-    method: SolutionMethod,
 }

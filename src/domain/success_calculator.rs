@@ -1,5 +1,6 @@
 use rayon::iter::repeatn;
 use rayon::prelude::*;
+use std::collections::HashMap;
 
 use crate::domain::contestant::Contestant;
 use crate::domain::door::Door;
@@ -12,14 +13,16 @@ impl SuccessRateCalculator {
         SuccessRateCalculator {}
     }
 
-    pub(crate) fn calculate_switching_success_rate_for_iterations(
-        &self,
-        iteration_count: usize,
-    ) -> f64 {
-        self.calculate_method_success_rate_for_iterations(
-            iteration_count,
-            Self::demo_game_show_with_switching_method,
-        )
+    pub(crate) fn calculate_success_rates(&self, iterations: usize) -> HashMap<String, f64> {
+        let stick_rate = self.calculate_sticking_success_rate_for_iterations(iterations);
+        HashMap::from_iter([
+            (
+                "random".to_string(),
+                self.calculate_random_success_rate_for_iterations(iterations),
+            ),
+            ("stick".to_string(), stick_rate),
+            ("switch".to_string(), 1_f64 - stick_rate),
+        ])
     }
 
     pub(crate) fn calculate_sticking_success_rate_for_iterations(
